@@ -1,6 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mtu_connect_hub/features/home/data/my_complaint.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/acacademicadvisory_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/academic_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/academicadv_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/caferteria_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/chapel_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/college_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/department_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/finiance_assistance_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/healthcare_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/hostel_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/it_support_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/libraryhelp_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/student_affairs_office.dart';
+import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/technical_support_office.dart';
 import 'package:mtu_connect_hub/features/home/presentation/user_virtual_admin/virtual_hub.dart';
 import 'package:mtu_connect_hub/features/widgets/components/my_drawer.dart';
 
@@ -13,6 +28,37 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   bool isMainAdmin = true;
+   String userEmail = "Guest";
+  String displayName = "Guest";
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUser();
+  }
+
+  void _initializeUser() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userEmail = user.email ?? "Guest";
+        displayName = userEmail.split('@').first;
+      });
+    }
+  }
+
+  String _getGreeting() {
+    int hour = DateTime.now().hour;
+    if (hour >= 5 && hour < 12) {
+      return "Good morning, $displayName";
+    } else if (hour >= 12 && hour < 17) {
+      return "Good afternoon, $displayName";
+    } else if (hour >= 17 && hour < 21) {
+      return "Good evening, $displayName";
+    } else {
+      return "Good night, $displayName";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,34 +69,58 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 30, 30, 40),
         elevation: 0,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildToggleButton("Main Admins", isMainAdmin, () {
-                    setState(() {
-                      isMainAdmin = true;
-                    });
-                  }),
-                  const SizedBox(width: 13,),
-                  _buildToggleButton("Virtual Admin", !isMainAdmin, () {
-                    setState(() {
-                      isMainAdmin = false;
-                    });
-                  }),
-                ],
-              ),
-            ),
-            Expanded(
-              child: isMainAdmin ? _buildMainAdminGrid() : _buildVirtualAdminUI(),
-            ),
-          ],
+         title: Text(
+          'Welcome To MTU CONNECT HUB',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Text(
+           _getGreeting(),
+           style: GoogleFonts.aBeeZee(
+          fontSize: 38,
+          // fontWeight: FontWeight.bold,
+          color: Colors.white,
+                    ),
+                  ),
+          Text(
+          'Toggle between Admins to get in touch!',
+          style: GoogleFonts.styleScript(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  
+                _buildToggleButton("Main Admins", isMainAdmin, () {
+                  setState(() {
+                    isMainAdmin = true;
+                  });
+                }),
+                const SizedBox(width: 13,),
+                _buildToggleButton("Virtual Admin", !isMainAdmin, () {
+                  setState(() {
+                    isMainAdmin = false;
+                  });
+                }),
+              ],
+            ),
+          ),
+          Expanded(
+            child: isMainAdmin ? _buildMainAdminGrid() : _buildVirtualAdminUI(),
+          ),
+        ],
       ),
     );
   }
@@ -156,42 +226,59 @@ class _HomepageState extends State<Homepage> {
   }
 
   // Widget _buildOfficeCard(String office) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey.shade900,
-  //       borderRadius: BorderRadius.circular(12),
-  //     ),
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         CircleAvatar(
-  //           radius: 30,
-  //           backgroundColor: Colors.grey.shade700,
-  //         ),
-  //         const SizedBox(height: 10),
-  //         Text(
-  //           office,
-  //           style: const TextStyle(color: Colors.white, fontSize: 16),
-  //         ),
-  //         const SizedBox(height: 5),
-  //         IconButton( 
-  //           onPressed: (){
+  // // Map office names to asset image paths
+  // final Map<String, String> officeImages = {
+  //   "Department Office": "assets/department.png",
+  //   "College Office": "assets/college.png",
+  //   "Hostel Office": "assets/hostemain.png",
+  //   "Chapel Office": "assets/chapel.png",
+  //   "Health Care Office": "assets/healthcare.png",
+  //   "Cafeteria Office": "assets/caferteria.png",
+  //   "IT Support": "assets/ICT.png",
+  //   "Library Help": "assets/library.png",
+  //   "Student Affairs": "assets/studentaffairs.png",
+  //   "Finance Assistance": "assets/finiance.png",
+  //   "Academic Advisory": "assets/academicadvise.png",
+  //   "Technical Support": "assets/technicalsupport.png",
+  // };
+
+  // // Use default image if no specific image is found
+  // String imagePath = officeImages[office] ?? "assets/studentaffairs.png";
+
+  // return Container(
+  //   decoration: BoxDecoration(
+  //     color: Colors.grey.shade900,
+  //     borderRadius: BorderRadius.circular(12),
+  //   ),
+  //   child: Column(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       CircleAvatar(
+  //         radius: 30,
+  //         backgroundColor: Colors.blue.shade300,
+  //         backgroundImage: AssetImage(imagePath), // Use image as avatar background
+  //       ),
+  //       const SizedBox(height: 10),
+  //       Text(
+  //         office,
+  //         style: const TextStyle(color: Colors.white, fontSize: 16),
+  //       ),
+  //       const SizedBox(height: 5),
+  //       IconButton(
+  //         onPressed: () {
   //           Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(builder: (context) => Addcomplaintspage()),
-  //               );
-  //         }, color: Colors.white, icon: const Icon(Icons.chevron_right_outlined),),
-  //       ],
-  //     ),
-  //   );
-  // }
+  //             context,
+              // MaterialPageRoute(builder: (context) => Addcomplaintspage()),
+  //           );
+  //         },
+  //         color: Colors.white,
+  //         icon: const Icon(Icons.chevron_right_outlined),
+  //       ),
+  //     ],
+  //   ),
+  // );
 
-
-
-
-
-  Widget _buildOfficeCard(String office) {
-  // Map office names to asset image paths
+  Widget _buildOfficeCard(String office, BuildContext context) {
   final Map<String, String> officeImages = {
     "Department Office": "assets/department.png",
     "College Office": "assets/college.png",
@@ -207,7 +294,22 @@ class _HomepageState extends State<Homepage> {
     "Technical Support": "assets/technicalsupport.png",
   };
 
-  // Use default image if no specific image is found
+  // Map each office to a specific complaint page
+  final Map<String, Widget Function()> officePages = {
+    "Department Office": () => DepartmentComplaintsPage(),
+    "College Office": () => CollegeComplaintsPage(),
+    "Hostel Office": () => HostelComplaintsPage(),
+    "Chapel Office": () => ChapelComplaintsPage(),
+    "Health Care Office": () => HealthCareComplaintsPage(),
+    "Cafeteria Office": () => CafeteriaComplaintsPage(),
+    "IT Support": () => ITSupportComplaintsPage(),
+    "Library Help": () => LibraryComplaintsPage(),
+    "Student Affairs": () => StudentAffairsComplaintsPage(),
+    "Finance Assistance": () => FinanceComplaintsPage(),
+    "Academic Advisory": () => AcademicAdvisoryComplaintsPage(),
+    "Technical Support": () => TechnicalSupportComplaintsPage(),
+  };
+
   String imagePath = officeImages[office] ?? "assets/studentaffairs.png";
 
   return Container(
@@ -221,7 +323,7 @@ class _HomepageState extends State<Homepage> {
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.blue.shade300,
-          backgroundImage: AssetImage(imagePath), // Use image as avatar background
+          backgroundImage: AssetImage(imagePath),
         ),
         const SizedBox(height: 10),
         Text(
@@ -231,10 +333,17 @@ class _HomepageState extends State<Homepage> {
         const SizedBox(height: 5),
         IconButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Addcomplaintspage()),
-            );
+            if (officePages.containsKey(office)) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => officePages[office]!()),
+              );
+            } else {
+              // Handle unknown office (optional)
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Page not found for $office')),
+              );
+            }
           },
           color: Colors.white,
           icon: const Icon(Icons.chevron_right_outlined),
@@ -242,6 +351,8 @@ class _HomepageState extends State<Homepage> {
       ],
     ),
   );
+}
+
 }
 
 
