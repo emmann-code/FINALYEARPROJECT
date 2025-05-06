@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mtu_connect_hub/features/home/data/my_complaint.dart';
-import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/acacademicadvisory_office.dart';
-import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/academic_office.dart';
 import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/academicadv_office.dart';
 import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/caferteria_office.dart';
 import 'package:mtu_connect_hub/features/home/presentation/user_main_admin/chapel_office.dart';
@@ -70,7 +67,7 @@ class _HomepageState extends State<Homepage> {
         backgroundColor: const Color.fromARGB(255, 30, 30, 40),
         elevation: 0,
          title: Text(
-          'Welcome To MTU CONNECT HUB',
+          ' MTU CONNECT HUB',
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -81,19 +78,21 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Column(
         children: [
-          Text(
-           _getGreeting(),
-           style: GoogleFonts.aBeeZee(
-          fontSize: 38,
-          // fontWeight: FontWeight.bold,
-          color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+             _getGreeting(),
+             style: GoogleFonts.aBeeZee(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+                      ),
                     ),
-                  ),
+          ),
           Text(
           'Toggle between Admins to get in touch!',
-          style: GoogleFonts.styleScript(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
+          style: GoogleFonts.sanchez(
+            fontSize: 17,
             color: Colors.white,
           ),
         ),
@@ -161,7 +160,7 @@ class _HomepageState extends State<Homepage> {
       ),
       itemCount: mainAdminOffices.length,
       itemBuilder: (context, index) {
-        return _buildOfficeCard(mainAdminOffices[index]);
+        return _buildOfficeCard(mainAdminOffices[index] , context);
       },
     );
   }
@@ -175,7 +174,7 @@ class _HomepageState extends State<Homepage> {
           children: [
              Center(child: Padding(
                padding: const EdgeInsets.only(bottom: 10),
-               child:virtualhub(),
+               child:virtualhub(context),
              )),
             _buildAdminCard(),
             const SizedBox(height: 20),
@@ -224,59 +223,6 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
-
-  // Widget _buildOfficeCard(String office) {
-  // // Map office names to asset image paths
-  // final Map<String, String> officeImages = {
-  //   "Department Office": "assets/department.png",
-  //   "College Office": "assets/college.png",
-  //   "Hostel Office": "assets/hostemain.png",
-  //   "Chapel Office": "assets/chapel.png",
-  //   "Health Care Office": "assets/healthcare.png",
-  //   "Cafeteria Office": "assets/caferteria.png",
-  //   "IT Support": "assets/ICT.png",
-  //   "Library Help": "assets/library.png",
-  //   "Student Affairs": "assets/studentaffairs.png",
-  //   "Finance Assistance": "assets/finiance.png",
-  //   "Academic Advisory": "assets/academicadvise.png",
-  //   "Technical Support": "assets/technicalsupport.png",
-  // };
-
-  // // Use default image if no specific image is found
-  // String imagePath = officeImages[office] ?? "assets/studentaffairs.png";
-
-  // return Container(
-  //   decoration: BoxDecoration(
-  //     color: Colors.grey.shade900,
-  //     borderRadius: BorderRadius.circular(12),
-  //   ),
-  //   child: Column(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     children: [
-  //       CircleAvatar(
-  //         radius: 30,
-  //         backgroundColor: Colors.blue.shade300,
-  //         backgroundImage: AssetImage(imagePath), // Use image as avatar background
-  //       ),
-  //       const SizedBox(height: 10),
-  //       Text(
-  //         office,
-  //         style: const TextStyle(color: Colors.white, fontSize: 16),
-  //       ),
-  //       const SizedBox(height: 5),
-  //       IconButton(
-  //         onPressed: () {
-  //           Navigator.push(
-  //             context,
-              // MaterialPageRoute(builder: (context) => Addcomplaintspage()),
-  //           );
-  //         },
-  //         color: Colors.white,
-  //         icon: const Icon(Icons.chevron_right_outlined),
-  //       ),
-  //     ],
-  //   ),
-  // );
 
   Widget _buildOfficeCard(String office, BuildContext context) {
   final Map<String, String> officeImages = {
@@ -351,16 +297,15 @@ class _HomepageState extends State<Homepage> {
       ],
     ),
   );
+ }
 }
 
-}
 
 
 
 
 
-
-  Widget virtualhub(){
+  Widget virtualhub(BuildContext context){
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
@@ -382,6 +327,7 @@ class _HomepageState extends State<Homepage> {
           ),
           IconButton( 
             onPressed: (){
+              // Navigator.pushNamed(context, '/virtual ');
             Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => virtualhubpage()),
@@ -391,7 +337,7 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
-}
+
 
 const List<String> mainAdminOffices = [
   "Department Office",

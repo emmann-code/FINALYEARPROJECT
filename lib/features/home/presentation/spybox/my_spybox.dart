@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mtu_connect_hub/features/widgets/components/my_drawer.dart';
 
 class Spyboxpage extends StatefulWidget {
   const Spyboxpage({super.key});
@@ -18,6 +22,7 @@ class _SpyboxpageState extends State<Spyboxpage> {
     "Corruption",
     "Emergency",
     "Suspicious Activity",
+    "Staff",
     "Other",
   ];
 
@@ -27,16 +32,63 @@ class _SpyboxpageState extends State<Spyboxpage> {
     "Critical",
   ];
 
+  // Send critical spy notice
+  Future<void> _submitTipOff() async {
+    // Prevent empty message submission
+    if (messageController.text.trim().isEmpty || selectedCategory == null || selectedUrgency == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields!')),
+      );
+      return;
+    }
+
+    try {
+      // Get current user UID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      await FirebaseFirestore.instance.collection('SPYBOXTIPOFF').add({
+        'Messagedescription': messageController.text,
+        'category': selectedCategory,
+        'urgencylevel': selectedUrgency,
+        'isAnonymous': isAnonymous,
+        'timestamp': FieldValue.serverTimestamp(),
+        'datestamp': DateTime.now().toIso8601String(),
+        'userId': isAnonymous ? "Anonymous" : userId,
+      });
+
+      // Clear input fields after submission
+      messageController.clear();
+      setState(() {
+        selectedCategory = null;
+        selectedUrgency = null;
+        isAnonymous = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tip Off Sent Successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 46, 44, 53),
-      appBar: AppBar(
-        title: const Text("SpyBox", style: TextStyle(color: Colors.white)),
+      backgroundColor: const Color.fromARGB(255, 46, 44, 53),    
+    appBar: AppBar(
+        title:  Text("SpyBox", style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),),
         backgroundColor: const Color.fromARGB(255, 30, 30, 40),
         centerTitle: true,
       ),
-      drawer: _buildSpyBoxDrawer(),
+    drawer: MyDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -56,46 +108,10 @@ class _SpyboxpageState extends State<Spyboxpage> {
     );
   }
 
-  Widget _buildSpyBoxDrawer() {
-    return Drawer(
-      backgroundColor: const Color.fromARGB(255, 30, 30, 40),
-      child: ListView(
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-            ),
-            child: Text("SpyBox Navigation", style: TextStyle(color: Colors.white, fontSize: 20)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.report, color: Colors.white),
-            title: const Text("Report Issue", style: TextStyle(color: Colors.white)),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip, color: Colors.white),
-            title: const Text("Privacy Policy", style: TextStyle(color: Colors.white)),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.security, color: Colors.white),
-            title: const Text("Safety Guidelines", style: TextStyle(color: Colors.white)),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text("Exit", style: TextStyle(color: Colors.redAccent)),
-            onTap: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildMessageInput() {
     return TextField(
       controller: messageController,
-      maxLines: 4,
+      maxLines: 5,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         filled: true,
@@ -178,33 +194,13 @@ class _SpyboxpageState extends State<Spyboxpage> {
 
   Widget _buildSubmitButton() {
     return ElevatedButton(
-      onPressed: _submitTip,
+      onPressed: _submitTipOff,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blueAccent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
       ),
       child: const Text("Submit Tip", style: TextStyle(color: Colors.white)),
-    );
-  }
-
-  void _submitTip() {
-    print("Tip Submitted:");
-    print("Message: ${messageController.text}");
-    print("Category: $selectedCategory");
-    print("Urgency: $selectedUrgency");
-    print("Anonymity: $isAnonymous");
-
-    // Clear fields after submission
-    messageController.clear();
-    setState(() {
-      selectedCategory = null;
-      selectedUrgency = null;
-      isAnonymous = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Tip sent successfully!")),
     );
   }
 }

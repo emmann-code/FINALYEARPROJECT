@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mtu_connect_hub/features/auth/presentation/sign_in_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,12 +186,17 @@ class _profilesettingsState extends State<profilesettings> {
         const SizedBox(height: 10),
         Text(
           _matricNumber ?? 'Loading...',
-          style: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         Text(
           _user?.email ?? 'No Email Found',
-          style: const TextStyle(color: Colors.grey),
+         style: GoogleFonts.poppins(
+            color: Colors.white,
+          ),
         ),
       ],
     );
