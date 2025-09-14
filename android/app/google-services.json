@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "754150768955",
+    "project_id": "mtuconnecthub",
+    "storage_bucket": "mtuconnecthub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754150768955:android:23468da86364258ca3771e",
+        "android_client_info": {
+          "package_name": "com.example.mtu_connect_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByHJ59fTV7A5TxUyiu3rdbwpKcTWQ0CM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

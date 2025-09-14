@@ -1,0 +1,25 @@
+{
+    "flutter": {
+        "platforms": {
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "mtuconnecthub",
+                    "configurations": {
+                        "android": "1:754150768955:android:23468da86364258ca3771e",
+                        "ios": "1:754150768955:ios:41ea2e08079e262ba3771e",
+                        "macos": "1:754150768955:ios:41ea2e08079e262ba3771e",
+                        "web": "1:754150768955:web:58637007edc3166fa3771e",
+                        "windows": "1:754150768955:web:725b82db50f3f094a3771e"
+                    }
+                }
+            },
+            "android": {
+                "default": {
+                    "projectId": "mtuconnecthub",
+                    "appId": "1:754150768955:android:23468da86364258ca3771e",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            }
+        }
+    }
+}
